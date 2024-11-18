@@ -1,0 +1,13 @@
+
+From React Lectures :-
+
+1) Props (Passing & Recieving)
+2) useState
+3) useEffect
+4) Sorting
+5) Searching
+6) Pagination
+7) API Fetch
+8) Mapping
+9) Context API
+10)Routing (Navigate)

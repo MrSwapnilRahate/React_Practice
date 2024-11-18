@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1> 09 Task, Microtask, callstack, UIRenders</h1>
+
+    <ol>
+        <!-- Synchrnous code -->
+        <!-- always the highest priority  -->
+        <!-- Asynchronous code  -->
+        <!-- 1. Task Queue: cb from any asynchronous callback based fn and event listner  -->
+        <!-- 2. UI render: requestAnimationframe -> help you to execute JS just before rendering  -->
+        <!-- 3. MicroTask Queue: callbacks of promise are enqued  -->
+    </ol>
+
+    <script>
+           // synchronous code always highest priority after that async code hevae the priority
+        console.log("A, sync stack, 1st priority"); // sync code
+
+        // **************** to execute a piece of code before rendering ******************* //
+        requestAnimationFrame(function () {
+            console.log("B request animation Frame (rendering task), 4th priority");
+        })
+
+        // ********** callback queue / Task queue ************** //
+        setTimeout(() => {
+            console.log("C task queue- (Async, SetTimeOut), 3rd priority") // Async code
+        }, 0);
+
+        // ********** fn will go into microtask queue ************ //
+        Promise.resolve().then(function () {
+            console.log("E microtask queue (Promise) 2nd"); // E & G is present in the microtask at the same time
+        }).then(function () {
+            console.log("F microtask queue (Promise) 3rd");
+        });
+
+        queueMicrotask(function () {
+            console.log("D microtask (function), 2nd priority");
+        });
+
+        console.log("G, sync stack, 1st priority"); // sync code
+
+    </script>
+
+// sync code(stack) > microtask > cb / task queue > requestAnimationFrame
+/*
+    Some key concepts related to JS execution and rendering in the browser. Let me explain each of them in more detail:
+        1. Call Stack: The call stack is a data structure that keeps track of the function calls in a jS program. It
+            follows the Last-In-First-Out (LIFO) principle. When a function is called, it"s pushed onto the call stack, 
+            and when it returns or completes, it's popped off the stack. This stack detremines the order in which sync 
+            code is executed.
+    
+        2. MicroTask Queue: The microtask queue is a seprate queue that handles microtask, which have a higher priority
+            than tasks. Promise and certain other asyn operations, like "process.nextTick" in Node.js or
+            "MutationObserver" in the browser, schedule to run as microtask. Microtask are executed before the next rendering, 
+            and they are processed entirely before tasks.
+        
+        This means that if there are microtasks in queue, they will be executed before any task in the task queue.
+
+        3. Task Queue: The task queue, often refered to as the "task queue" or "callback queue", is a part of the event loop in JS.
+            It's responsible for managing async code execution.
+            when async events like I/O operations, timer (e.g. setTimeOut) or event Listeners (e.g. click event) have their callback functions ready to run,
+                those callback are placed 7in the task queue.
+        
+        The event loop continiously checks if the call stack is empty. If it is, it takes the next task from the task queue and pushes 
+            it onto the call stack for execution.
+                
+        4. UI Rendering: The browser's rendering engine is responsible for rendering web pages.
+            The rendering process involves various steps, including layout, paint, and composite. The browser tries to render at a consistent
+            frame rate, typically 60 frames per second (FPS) for smooth animation.
+
+        */
+</body>
+</html>
